@@ -24,10 +24,15 @@ const getPostById = async (id) => {
 };
 
 const updatePost = async (id, data) => {
-  return await prisma.post.update({
-    where: { id: Number(id) },
-    data,
-  });
+  try {
+    return await prisma.post.update({
+      where: { id: Number(id) },
+      data,
+    });
+  } catch (error) {
+    console.error("Error updating post by ID:", error);
+    throw error;
+  }
 };
 
 const deletePost = async (id) => {

@@ -31,7 +31,7 @@ app.use((error, req, res, next) => {
   const message =
     error.message ||
     "An error occurred while trying to process your request. Please try again later.";
-  const data = null;
+  const data = error.data || null;
   const success = false;
   res.status(status).json(generateResponse(status, success, message, data));
 });

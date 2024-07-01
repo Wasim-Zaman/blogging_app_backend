@@ -3,29 +3,33 @@ const { body } = require("express-validator");
 
 const feedController = require("../controllers/feed");
 const upload = require("../config/multer-config");
+const {
+  postUpdateValidation,
+  postCreateValidation,
+} = require("../validations/post");
 
 const router = express.Router();
 
-// GET /feed/posts
+// GET /v1/posts
 router.get("/v1/posts", feedController.getPosts);
 
-// POST /feed/post
+// POST /v1/post
 router.post(
   "/v1/post",
   upload.single("image"),
-  [
-    body("title")
-      .trim()
-      .isLength({ min: 5 })
-      .withMessage("title is required and must be at least 5 characters."),
-    body("content")
-      .trim()
-      .isLength({ min: 5 })
-      .withMessage("content is required and must be at least 5 characters."),
-  ],
+  postCreateValidation,
   feedController.createPost
 );
 
+// GET /v1/post/:postId
 router.get("/v1/post/:postId", feedController.getPost);
+
+// PUT /v1/post/:postId
+router.put(
+  "/v1/post/:postId",
+  upload.single("image"),
+  postUpdateValidation,
+  feedController.updatePost
+);
 
 module.exports = router;

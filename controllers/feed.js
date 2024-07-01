@@ -1,7 +1,12 @@
 const { validationResult } = require("express-validator");
 
 const generateResponse = require("../utils/response");
-const { createPost, getAllPosts, getPostById } = require("../models/post");
+const {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+} = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
@@ -61,6 +66,41 @@ exports.getPost = async (req, res, next) => {
       .json(generateResponse(200, true, "Post fetched successfully", post));
   } catch (err) {
     console.log(err);
+    err.message = null;
+    next(err);
+  }
+};
+
+exports.updatePost = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation failed, entered data is incorrect.");
+    error.statusCode = 422;
+    error.data = errors;
+    return next(error);
+  }
+
+  const { postId } = req.params;
+  const { title, content } = req.body;
+  try {
+    const post = await getPostById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      return next(error);
+    }
+    if (title) post.title = title;
+    if (content) post.content = content;
+    if (req.file) post.imageUrl = req.file.path.replaceAll("\\", "/");
+    console.log(post);
+    const updatedPost = await updatePost(postId, post);
+    res
+      .status(200)
+      .json(
+        generateResponse(200, true, "Post updated successfully", updatedPost)
+      );
+  } catch (err) {
+    console.error(err);
     err.message = null;
     next(err);
   }
