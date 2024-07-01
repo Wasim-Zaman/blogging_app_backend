@@ -13,14 +13,19 @@ const createPost = async (title, imageUrl, content, creator) => {
 };
 
 const getPostById = async (id) => {
-  return await prisma.post.findUnique({
-    where: { id },
-  });
+  try {
+    return await prisma.post.findUnique({
+      where: { id: Number(id) },
+    });
+  } catch (error) {
+    console.error("Error fetching post by ID:", error);
+    throw error;
+  }
 };
 
 const updatePost = async (id, data) => {
   return await prisma.post.update({
-    where: { id },
+    where: { id: Number(id) },
     data,
   });
 };

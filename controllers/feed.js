@@ -1,8 +1,7 @@
 const { validationResult } = require("express-validator");
 
 const generateResponse = require("../utils/response");
-const { createPost } = require("../models/post");
-const { getAllPosts } = require("../models/post");
+const { createPost, getAllPosts, getPostById } = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
@@ -12,6 +11,7 @@ exports.getPosts = async (req, res, next) => {
       .json(generateResponse(200, true, "Fetched posts successfully.", posts));
   } catch (err) {
     console.error(err);
+    err.message = null;
     next(err);
   }
 };
@@ -19,20 +19,18 @@ exports.getPosts = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res
-      .status(422)
-      .json(
-        generateResponse(
-          422,
-          false,
-          "Validation failed, entered data is incorrect.",
-          errors.array()
-        )
-      );
+    const error = new Error("Validation failed, entered data is incorrect.");
+    error.statusCode = 422;
+    return next(error);
   }
 
+  if (!req.file) {
+    const error = new Error("No image provided.");
+    error.statusCode = 422;
+    return next(error);
+  }
   const { title, content } = req.body;
-  const imageUrl = "images/node-icon.png";
+  const imageUrl = req.file.path.replaceAll("\\", "/");
   const creator = { name: "Wasim Zaman" };
 
   try {
@@ -43,7 +41,27 @@ exports.createPost = async (req, res, next) => {
         generateResponse(201, true, "Feed post created successfully", post)
       );
   } catch (err) {
-    console.error(err);
+    // console.error(err);
+    err.message = null;
+    next(err);
+  }
+};
+
+exports.getPost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const post = await getPostById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      return next(error);
+    }
+    res
+      .status(200)
+      .json(generateResponse(200, true, "Post fetched successfully", post));
+  } catch (err) {
+    console.log(err);
+    err.message = null;
     next(err);
   }
 };

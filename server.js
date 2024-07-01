@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message =
-    error.errorMessage ||
+    error.message ||
     "An error occurred while trying to process your request. Please try again later.";
   const data = null;
   const success = false;
