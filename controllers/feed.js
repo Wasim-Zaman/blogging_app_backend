@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 
 const generateResponse = require("../utils/response");
+const { deleteFile } = require("../utils/fileUtils");
 const {
   createPost,
   getAllPosts,
@@ -91,8 +92,15 @@ exports.updatePost = async (req, res, next) => {
     }
     if (title) post.title = title;
     if (content) post.content = content;
-    if (req.file) post.imageUrl = req.file.path.replaceAll("\\", "/");
-    console.log(post);
+    if (req.file) {
+      const oldImagePath = post.imageUrl;
+      post.imageUrl = req.file.path.replaceAll("\\", "/");
+
+      // Delete the old image file
+      if (oldImagePath) {
+        await deleteFile(oldImagePath);
+      }
+    }
     const updatedPost = await updatePost(postId, post);
     res
       .status(200)
