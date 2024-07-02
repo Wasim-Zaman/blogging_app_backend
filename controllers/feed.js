@@ -4,18 +4,35 @@ const generateResponse = require("../utils/response");
 const { deleteFile } = require("../utils/fileUtils");
 const {
   createPost,
-  getAllPosts,
+  getPaginatedPosts,
   getPostById,
   updatePost,
   deletePost,
 } = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const posts = await getAllPosts();
-    res
-      .status(200)
-      .json(generateResponse(200, true, "Fetched posts successfully.", posts));
+    const { posts, totalPosts } = await getPaginatedPosts(skip, limit);
+    const totalPages = Math.ceil(totalPosts / limit);
+
+    res.status(200).json({
+      status: 200,
+      success: true,
+      message: "Fetched posts successfully.",
+      data: {
+        posts,
+        pagination: {
+          totalPosts,
+          totalPages,
+          currentPage: page,
+          limit,
+        },
+      },
+    });
   } catch (err) {
     console.error(err);
     err.message = null;
@@ -26,8 +43,10 @@ exports.getPosts = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("Validation failed, entered data is incorrect.");
+    const msg = errors.errors[0].msg;
+    const error = new Error(msg);
     error.statusCode = 422;
+    error.data = errors;
     return next(error);
   }
 
@@ -76,7 +95,8 @@ exports.getPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("Validation failed, entered data is incorrect.");
+    const msg = errors.errors[0].msg;
+    const error = new Error(msg);
     error.statusCode = 422;
     error.data = errors;
     return next(error);

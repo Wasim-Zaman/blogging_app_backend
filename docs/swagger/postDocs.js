@@ -2,12 +2,27 @@
  * @swagger
  * /feed/api/v1/posts:
  *   get:
- *     summary: Retrieve all posts
- *     description: Fetches all posts from the database.
+ *     summary: Get all posts with pagination
+ *     description: Retrieve all posts with pagination support
  *     tags: [Posts]
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         description: Page number for pagination
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - name: limit
+ *         in: query
+ *         required: false
+ *         description: Number of posts per page
+ *         schema:
+ *           type: integer
+ *           example: 10
  *     responses:
  *       200:
- *         description: Successfully fetched posts
+ *         description: Fetched posts successfully
  *         content:
  *           application/json:
  *             schema:
@@ -23,29 +38,48 @@
  *                   type: string
  *                   example: Fetched posts successfully.
  *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       title:
- *                         type: string
- *                       imageUrl:
- *                         type: string
- *                       content:
- *                         type: string
- *                       creator:
+ *                   type: object
+ *                   properties:
+ *                     posts:
+ *                       type: array
+ *                       items:
  *                         type: object
  *                         properties:
- *                           name:
+ *                           id:
+ *                             type: integer
+ *                             example: 1
+ *                           title:
  *                             type: string
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
+ *                             example: Sample Title
+ *                           content:
+ *                             type: string
+ *                             example: This is the content of the post.
+ *                           imageUrl:
+ *                             type: string
+ *                             example: https://example.com/image.jpg
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: 2021-01-01T00:00:00.000Z
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: 2021-01-01T00:00:00.000Z
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         totalPosts:
+ *                           type: integer
+ *                           example: 50
+ *                         totalPages:
+ *                           type: integer
+ *                           example: 5
+ *                         currentPage:
+ *                           type: integer
+ *                           example: 1
+ *                         limit:
+ *                           type: integer
+ *                           example: 10
  *       500:
  *         description: Internal server error
  *         content:
@@ -61,7 +95,7 @@
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Internal server error
+ *                   example: Internal server error.
  */
 
 /**
@@ -490,4 +524,3 @@
  *                   type: string
  *                   example: Internal server error.
  */
-//

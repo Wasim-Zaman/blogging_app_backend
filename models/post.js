@@ -45,10 +45,21 @@ const getAllPosts = async () => {
   return await prisma.post.findMany();
 };
 
+const getPaginatedPosts = async (skip, take) => {
+  const posts = await prisma.post.findMany({
+    skip,
+    take,
+    orderBy: { createdAt: "desc" },
+  });
+  const totalPosts = await prisma.post.count();
+  return { posts, totalPosts };
+};
+
 module.exports = {
   createPost,
   getPostById,
   updatePost,
   deletePost,
   getAllPosts,
+  getPaginatedPosts,
 };
