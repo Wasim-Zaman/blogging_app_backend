@@ -1,5 +1,5 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 
 const feedController = require("../controllers/feed");
 const upload = require("../config/multer-config");
@@ -30,6 +30,12 @@ router.put(
   upload.single("image"),
   postUpdateValidation,
   feedController.updatePost
+);
+
+router.delete(
+  "/v1/post/:postId",
+  param("postId").toInt().isNumeric(),
+  feedController.deletePost
 );
 
 module.exports = router;

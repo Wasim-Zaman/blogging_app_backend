@@ -7,6 +7,7 @@ const {
   getAllPosts,
   getPostById,
   updatePost,
+  deletePost,
 } = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
@@ -107,6 +108,34 @@ exports.updatePost = async (req, res, next) => {
       .json(
         generateResponse(200, true, "Post updated successfully", updatedPost)
       );
+  } catch (err) {
+    console.error(err);
+    err.message = null;
+    next(err);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  const { postId } = req.params;
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error("Validation failed, entered data is incorrect.");
+      error.statusCode = 422;
+      error.data = errors;
+      return next(error);
+    }
+    const post = await getPostById(postId);
+    if (!post) {
+      const error = new Error("Could not find post.");
+      error.statusCode = 404;
+      return next(error);
+    }
+    await deleteFile(post.imageUrl);
+    await deletePost(postId);
+    res
+      .status(200)
+      .json(generateResponse(200, true, "Post deleted successfully", post));
   } catch (err) {
     console.error(err);
     err.message = null;
