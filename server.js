@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const swaggerSpec = require("./config/swagger");
 const generateResponse = require("./utils/response");
 const feedRoutes = require("./routes/feed");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const port = 8080;
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed/api", feedRoutes);
+app.use("/auth/api", authRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {

@@ -67,7 +67,7 @@ exports.createPost = async (req, res, next) => {
         generateResponse(201, true, "Feed post created successfully", post)
       );
   } catch (err) {
-    // console.error(err);
+    console.error(err);
     err.message = null;
     next(err);
   }
