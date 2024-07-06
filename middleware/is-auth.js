@@ -3,7 +3,6 @@ require("dotenv").config();
 
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
-  console.log(req.get());
 
   if (!authHeader) {
     const error = new Error("Not authenticated.");
@@ -18,6 +17,7 @@ module.exports = (req, res, next) => {
     decodedToken = jwt.verify(token, process.env.SECRET);
   } catch (err) {
     err.statusCode = 500;
+    err.message = null;
     throw err;
   }
 
