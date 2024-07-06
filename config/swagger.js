@@ -23,8 +23,8 @@ var swaggerDefinition = {
 var options = {
   swaggerDefinition: swaggerDefinition,
   apis: [
-    path.join(__dirname, "../docs/swagger/postDocs.js"),
     path.join(__dirname, "../docs/swagger/authDocs.js"),
+    path.join(__dirname, "../docs/swagger/postDocs.js"),
     path.join(__dirname, "../docs/swagger/userDocs.js"),
   ],
 };

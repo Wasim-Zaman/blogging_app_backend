@@ -1,38 +1,29 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const createPost = async (title, imageUrl, content, creator) => {
-  return await prisma.post.create({
+const createPost = async (title, imageUrl, content, userId) => {
+  const post = await prisma.post.create({
     data: {
       title,
       imageUrl,
       content,
-      creator,
+      userId,
     },
   });
+  return post;
 };
 
 const getPostById = async (id) => {
-  try {
-    return await prisma.post.findUnique({
-      where: { id: Number(id) },
-    });
-  } catch (error) {
-    console.error("Error fetching post by ID:", error);
-    throw error;
-  }
+  return await prisma.post.findUnique({
+    where: { id: Number(id) },
+  });
 };
 
 const updatePost = async (id, data) => {
-  try {
-    return await prisma.post.update({
-      where: { id: Number(id) },
-      data,
-    });
-  } catch (error) {
-    console.error("Error updating post by ID:", error);
-    throw error;
-  }
+  return await prisma.post.update({
+    where: { id: Number(id) },
+    data,
+  });
 };
 
 const deletePost = async (id) => {

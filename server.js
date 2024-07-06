@@ -14,8 +14,6 @@ const port = 8080;
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// server public folder statically
-app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed/api", feedRoutes);

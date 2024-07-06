@@ -55,12 +55,13 @@ exports.createPost = async (req, res, next) => {
     error.statusCode = 422;
     return next(error);
   }
+
   const { title, content } = req.body;
   const imageUrl = req.file.path.replaceAll("\\", "/");
-  const creator = { name: "Wasim Zaman" };
+  const userId = req.userId;
 
   try {
-    const post = await createPost(title, imageUrl, content, creator);
+    const post = await createPost(title, imageUrl, content, +userId);
     res
       .status(201)
       .json(
