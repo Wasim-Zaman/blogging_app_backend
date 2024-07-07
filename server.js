@@ -3,21 +3,25 @@ const path = require("path");
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const swaggerSpec = require("./config/swagger");
 const generateResponse = require("./utils/response");
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 const app = express();
 const port = 8080;
 
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use("/feed/api", feedRoutes);
 app.use("/auth/api", authRoutes);
+app.use("/user/api", userRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {

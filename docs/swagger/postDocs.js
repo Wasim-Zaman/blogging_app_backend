@@ -100,6 +100,127 @@
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
+ * /feed/api/v1/post:
+ *   post:
+ *     summary: Create a new post
+ *     description: Create a new post with an image, title, and content
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Title of the post
+ *                 example: Sample Title
+ *               content:
+ *                 type: string
+ *                 description: Content of the post
+ *                 example: This is the content of the post
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file for the post
+ *             required:
+ *               - title
+ *               - content
+ *               - image
+ *     responses:
+ *       201:
+ *         description: Feed post created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 201
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Feed post created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 1
+ *                     title:
+ *                       type: string
+ *                       example: Sample Title
+ *                     content:
+ *                       type: string
+ *                       example: This is the content of the post
+ *                     imageUrl:
+ *                       type: string
+ *                       example: https://example.com/image.jpg
+ *                     creator:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: John Doe
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2024-07-06T12:34:56Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2024-07-06T12:34:56Z
+ *       422:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 422
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Error message
+ *                 data:
+ *                   type: object
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 500
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error.
+ */
+
+/**
+ * @swagger
  * /feed/api/v1/post/{postId}:
  *   get:
  *     summary: Get a post by ID
@@ -409,127 +530,6 @@
  *                 message:
  *                   type: string
  *                   example: Could not find post.
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 500
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Internal server error.
- */
-
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     BearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *
- * /feed/api/v1/post:
- *   post:
- *     summary: Create a new post
- *     description: Create a new post with an image, title, and content
- *     tags: [Posts]
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 description: Title of the post
- *                 example: Sample Title
- *               content:
- *                 type: string
- *                 description: Content of the post
- *                 example: This is the content of the post
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Image file for the post
- *             required:
- *               - title
- *               - content
- *               - image
- *     responses:
- *       201:
- *         description: Feed post created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 201
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Feed post created successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       example: 1
- *                     title:
- *                       type: string
- *                       example: Sample Title
- *                     content:
- *                       type: string
- *                       example: This is the content of the post
- *                     imageUrl:
- *                       type: string
- *                       example: https://example.com/image.jpg
- *                     creator:
- *                       type: object
- *                       properties:
- *                         name:
- *                           type: string
- *                           example: John Doe
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2024-07-06T12:34:56Z
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: 2024-07-06T12:34:56Z
- *       422:
- *         description: Validation error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 422
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Error message
- *                 data:
- *                   type: object
  *       500:
  *         description: Internal server error
  *         content:

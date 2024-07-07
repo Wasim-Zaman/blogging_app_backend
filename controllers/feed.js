@@ -3,12 +3,12 @@ const { validationResult } = require("express-validator");
 const generateResponse = require("../utils/response");
 const { deleteFile } = require("../utils/fileUtils");
 const {
-  createPost,
   getPaginatedPosts,
   getPostById,
   updatePost,
   deletePost,
 } = require("../models/post");
+const { createPostForUser } = require("../models/user");
 
 exports.getPosts = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -58,10 +58,10 @@ exports.createPost = async (req, res, next) => {
 
   const { title, content } = req.body;
   const imageUrl = req.file.path.replaceAll("\\", "/");
-  const userId = req.userId;
+  const creatorId = +req.userId;
 
   try {
-    const post = await createPost(title, imageUrl, content, +userId);
+    const post = await createPostForUser(title, imageUrl, content, creatorId);
     res
       .status(201)
       .json(
@@ -110,6 +110,11 @@ exports.updatePost = async (req, res, next) => {
     if (!post) {
       const error = new Error("Could not find post.");
       error.statusCode = 404;
+      return next(error);
+    }
+    if (post.userId.toString() !== req.userId.toString()) {
+      const error = new Error("Not authorized to update this post.");
+      error.statusCode = 403;
       return next(error);
     }
     if (title) post.title = title;

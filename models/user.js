@@ -63,10 +63,32 @@ const deleteUser = async (id) => {
   }
 };
 
+const createPostForUser = async (title, imageUrl, content, creatorId) => {
+  return await prisma.post.create({
+    data: {
+      title,
+      imageUrl,
+      content,
+      creator: {
+        connect: { id: creatorId },
+      },
+    },
+  });
+};
+
+const getUserWithPosts = async (userId) => {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    include: { posts: true },
+  });
+};
+
 module.exports = {
   createUser,
   getUserById,
   getUserByEmail,
   updateUser,
   deleteUser,
+  createPostForUser,
+  getUserWithPosts,
 };
