@@ -83,6 +83,7 @@ exports.getPost = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
+
     res
       .status(200)
       .json(generateResponse(200, true, "Post fetched successfully", post));
@@ -155,6 +156,11 @@ exports.deletePost = async (req, res, next) => {
     if (!post) {
       const error = new Error("Could not find post.");
       error.statusCode = 404;
+      return next(error);
+    }
+    if (+post.userId !== +req.userId) {
+      const error = new Error("Not authorized to delete this post.");
+      error.statusCode = 403;
       return next(error);
     }
     await deleteFile(post.imageUrl);

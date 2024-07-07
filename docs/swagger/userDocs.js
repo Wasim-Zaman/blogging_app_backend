@@ -1,69 +1,76 @@
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
  * /user/api/v1/user/{userId}:
  *   get:
- *     summary: Get user by ID
- *     description: Retrieve a user by their ID along with their posts.
- *     tags:
- *       - Users
+ *     summary: Get user details by ID
+ *     description: Retrieve user details by their ID
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
  *         required: true
  *         schema:
- *           type: integer
- *         description: The ID of the user to retrieve
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
  *           type: string
- *         description: Bearer token for authorization
+ *         description: ID of the user to fetch
+ *         example: 12345
  *     responses:
  *       200:
- *         description: A user object
+ *         description: User details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 email:
- *                   type: string
- *                   example: john.doe@example.com
- *                 name:
- *                   type: string
- *                   example: John Doe
  *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
  *                   type: string
- *                   example: I am new!
- *                 posts:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         example: 1
- *                       title:
- *                         type: string
- *                         example: My First Post
- *                       imageUrl:
- *                         type: string
- *                         example: http://example.com/image.jpg
- *                       content:
- *                         type: string
- *                         example: This is the content of the post.
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2024-07-07T14:48:00.000Z
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2024-07-07T14:48:00.000Z
+ *                   example: User fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 12345
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     email:
+ *                       type: string
+ *                       example: john.doe@example.com
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2024-07-06T12:34:56Z
+ *       403:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 403
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized access to user data
  *       404:
  *         description: User not found
  *         content:
