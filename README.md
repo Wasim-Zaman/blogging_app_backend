@@ -24,5 +24,5 @@ This is a backend application for a blogging platform, built using Express.js. I
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-username/blogging-backend.git
-   cd blogging-backend
+   git clone https://github.com/Wasim-Zaman/blogging_app_backend.git
+   cd blogging_app_backend
